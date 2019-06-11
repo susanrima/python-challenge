@@ -5,35 +5,41 @@ import csv
 csvpath = os.path.join('.', 'Resources', 'budget_data.csv')
 print (csvpath)
 
+#initialize title and rows as lists
+Header = [] 
+rows = []
+
 # Reading using CSV module
 with open(csvpath, newline='') as csvfile:
 
     # CSV reader specifies delimiter and variable that holds contents
     csvreader = csv.reader(csvfile, delimiter=',')
-    #budget_data_list = list(csvreader)
-    Date = []
-    ProfitLoss = []
-
-    print(csvreader)
-    #print(budget_data_list)
-
-    # Read the header row first
-    csv_header = next(csvreader)
-    print(f"CSV Header: {csv_header}")
+    #print(csvreader)
     
-    # Read each row and count total months
+    #initialize Total Months
     TotalMonths = 0
-    NetAmount = 0
-    for row in csvreader:
-        #print(row)
-        TotalMonths = TotalMonths + 1
-        #NetAmount += int(row[2])
-        Date.append(row[1])
-        ProfitLoss.append(row[1])
 
+    #skip header
+    Header = next(csvreader)
+    
+    # extracting each data row one by one
+    for row in csvreader: 
+        rows.append(row)
+        TotalMonths = TotalMonths + 1
+    # get total number of rows /dates
+    print("Total no. of rows: %d"%(csvreader.line_num))
+    # printing the field names 
+    print('Header Fields: ' + ', '.join(Header for Header in Header)) 
+    # Print Total Months
     print(f"Total Months = {int(TotalMonths)}")
-    print(Date[0])
-   # print(f"Net Amount = {int(NetAmount)}")
+  
+    #  printing first 5 rows 
+    print('\nFirst 5 rows are:\n') 
+    for row in rows[]: 
+    # parsing each column of a row 
+        for col in row: 
+            print("%s"%col), 
+        print('\n')
        
     
 #------------------ WRITE O/P INTO NEW FILE------------------------
