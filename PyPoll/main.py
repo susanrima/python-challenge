@@ -56,13 +56,14 @@ output_path = os.path.join(".", "Output", "results.txt")
 HighestVotes = 0
 with open(output_path, 'w', newline='') as txtfile:
     
-    
+ #Printing O/P into the txtfile   
     txtfile.write("""
 Election Results
 -------------------------\n""")
     txtfile.writelines(f"Total Votes: {TotalVotes} \n")
     txtfile.writelines("""-------------------------
 """)
+#printing the Candidates and their vote count
     for CandidateDict in CandidateListofDict:
         
         print(f"{CandidateDict['Candidate']}:  {round(float(CandidateDict['NumberOfVotes']/TotalVotes * 100), 3)}% ({CandidateDict['NumberOfVotes']})")
@@ -73,7 +74,7 @@ Election Results
     \n""")
     
     
-
+#Printing the Winner with highest votes
     for CandidateDict in CandidateListofDict:
         if CandidateDict['NumberOfVotes'] == max([CandidateDict['NumberOfVotes'] for CandidateDict in CandidateListofDict]):
             print(f"Winner : {CandidateDict['Candidate']}")
