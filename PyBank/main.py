@@ -5,56 +5,90 @@ import csv
 csvpath = os.path.join('.', 'Resources', 'budget_data.csv')
 print (csvpath)
 
-#initialize title and rows as lists
-Header = [] 
-rows = []
+#initialize csvlist
+csvlist = []
 
 # Reading using CSV module
 with open(csvpath, newline='') as csvfile:
 
-    # CSV reader specifies delimiter and variable that holds contents
-    csvreader = csv.reader(csvfile, delimiter=',')
-    #print(csvreader)
-    
-    #initialize Total Months
-    TotalMonths = 0
+    # CSV DictReader to read the csv file into an ordered dictionary
+    csvreader = csv.DictReader(csvfile, delimiter=',')
+    print(csvreader)
 
-    #skip header
-    Header = next(csvreader)
-    
-    # extracting each data row one by one
-    for row in csvreader: 
-        rows.append(row)
-        TotalMonths = TotalMonths + 1
-    # get total number of rows /dates
-    print("Total no. of rows: %d"%(csvreader.line_num))
-    # printing the field names 
-    print('Header Fields: ' + ', '.join(Header for Header in Header)) 
-    # Print Total Months
-    print(f"Total Months = {int(TotalMonths)}")
-  
-    #  printing first 5 rows 
-    print('\nFirst 5 rows are:\n') 
-    for row in rows[]: 
-    # parsing each column of a row 
-        for col in row: 
-            print("%s"%col), 
-        print('\n')
+# Reading csvdictreader file into a list of ordered dict & printing TotalMonths
+    for row in csvreader:
+        csvlist.append(row)
+TotalMonths = len(csvlist)
+#print(csvlist)
+#print(type(csvlist))
+print("""
+Financial Analysis
+----------------------------
+""")
+print(f"Total Months: {TotalMonths} ")
+
+# Calculating the sum of Profit/Loss, Average of Changes, Greatest Inc & Dec of Profits & printing all
+SumProfitLosses = 0
+PreviousMonthProfitLoss = 0
+SumofChange = 0
+ChangeBetweenMonth=0
+FirstRun=1
+GreatestInc = {
+    "Date": "",
+    "Change": 0
+}
+GreatestDec = {
+    "Date": "",
+    "Change": 0
+}
+
+for row in csvlist:
+        #print(row['Profit/Losses'])
+        SumProfitLosses = SumProfitLosses + int(row['Profit/Losses'])
+        if FirstRun==1:
+            PreviousMonthProfitLoss = int(row['Profit/Losses'])
+            FirstRun=0
+        else:
+          ChangeBetweenMonth= int(row['Profit/Losses'])-PreviousMonthProfitLoss
+          SumofChange=SumofChange+(ChangeBetweenMonth)
+          PreviousMonthProfitLoss= int(row['Profit/Losses'])
+          if ChangeBetweenMonth > GreatestInc["Change"]:
+              GreatestInc["Date"] = row['Date']
+              GreatestInc["Change"] = ChangeBetweenMonth
+
+          elif ChangeBetweenMonth < GreatestDec["Change"]:
+              GreatestDec["Date"] = row['Date']
+              GreatestDec["Change"] = ChangeBetweenMonth
+
+            
+
+
+print(f"Total: $ {SumProfitLosses}")
+
+AverageChange = SumofChange / (TotalMonths - 1)
+print(f"Average  Change: $ {round(AverageChange, 2)}")
+print(f"Greatest Increase in Profits: {GreatestInc['Date']} ( ${GreatestInc['Change']})")
+print(f"Greatest Decrease in Profits: {GreatestDec['Date']} ( ${GreatestDec['Change']})")
+        
+
        
     
 #------------------ WRITE O/P INTO NEW FILE------------------------
 
 # Specify the file to write to
-#output_path = os.path.join(".", "output", "new.csv")
+output_path = os.path.join(".", "Output", "results.txt")
 
 # Open the file using "write" mode. Specify the variable to hold the contents
-#with open(output_path, 'w', newline='') as csvfile:
+with open(output_path, 'w', newline='') as txtfile:
+        
+    txtfile.write("""Financial Analysis
+----------------------------
+    \n""")
+    txtfile.writelines(f"Total Months: {TotalMonths} \n")
+    txtfile.writelines(f"Total: $ {SumProfitLosses} \n")
 
-    # Initialize csv.writer
-    #csvwriter = csv.writer(csvfile, delimiter=',')
+    txtfile.writelines(f"Average  Change: $ {round(AverageChange, 2)}\n")
+    txtfile.writelines(f"Greatest Increase in Profits: {GreatestInc['Date']} ( ${GreatestInc['Change']})\n")
+    txtfile.writelines(f"Greatest Decrease in Profits: {GreatestDec['Date']} ( ${GreatestDec['Change']})\n")
+        
 
-    # Write the first row (column headers)
-    #csvwriter.writerow(['Total Months', 'Total', 'Average  Change', 'Greatest Increase in Profits','Greatest Decrease in Profits'])
-
-    # Write the second row
-    #csvwriter.writerow(['Caleb', 'Frost'])
