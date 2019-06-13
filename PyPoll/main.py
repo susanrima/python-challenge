@@ -19,62 +19,74 @@ with open(csvpath, newline='') as csvfile:
     for row in csvreader:
         csvlist.append(row)
 TotalVotes = len(csvlist)
-#print(csvlist)
-#print(type(csvlist))
 
 
+# Print the header and Total Votes
 print("""
 Election Results
--------------------------
-""")
+-------------------------""")
 print(f"Total Votes: {TotalVotes} ")
-print("""
--------------------------
+print("""-------------------------
 """)
 
+# initialize the list having dictionaries as elements
 
 CandidateListofDict=[]
-
 found_candidate=0
 
+#Calculating the Number of votes per candidate
 for row in csvlist:
     found_candidate=0
     for CandidateDict in CandidateListofDict:
         if row["Candidate"] == CandidateDict["Candidate"]:
-            #print('in')
+            
             #print(CandidateDict.keys())
             CandidateDict['NumberOfVotes'] = CandidateDict['NumberOfVotes'] + 1
             found_candidate=1
     if found_candidate==0:
         CandidateListofDict.append({"Candidate" : row["Candidate"],"NumberOfVotes" : 1})
-        #print(CandidateListofDict)
+        
 
-
-#print(CandidateListofDict)
 
 # Specify the file to write to
 output_path = os.path.join(".", "Output", "results.txt")
 
 # Open the file using "write" mode. Specify the variable to hold the contents
+
+HighestVotes = 0
 with open(output_path, 'w', newline='') as txtfile:
     
-    print("""Election Results
-        ----------------------------
-        """)
-    print(f"Total Votes: {TotalVotes}")
-    txtfile.write("""Election Results
-        ----------------------------
-        \n""")
+    
+    txtfile.write("""
+Election Results
+-------------------------\n""")
     txtfile.writelines(f"Total Votes: {TotalVotes} \n")
-
+    txtfile.writelines("""-------------------------
+""")
     for CandidateDict in CandidateListofDict:
         
+        print(f"{CandidateDict['Candidate']}:  {round(float(CandidateDict['NumberOfVotes']/TotalVotes * 100), 3)}% ({CandidateDict['NumberOfVotes']})")
+        txtfile.writelines(f"{CandidateDict['Candidate']}:  {round(float(CandidateDict['NumberOfVotes']/TotalVotes * 100), 3)}% ({CandidateDict['NumberOfVotes']})\n")
+    print("""\n-------------------------
+    """)
+    txtfile.writelines("""-------------------------
+    \n""")
+    
+    
 
-        print(f"{CandidateDict['Candidate']}:  {round(float(CandidateDict['NumberOfVotes']/TotalVotes * 100), 3)}  % ({CandidateDict['NumberOfVotes']}))")
+    for CandidateDict in CandidateListofDict:
+        if CandidateDict['NumberOfVotes'] == max([CandidateDict['NumberOfVotes'] for CandidateDict in CandidateListofDict]):
+            print(f"Winner : {CandidateDict['Candidate']}")
+            txtfile.writelines(f"Winner : {CandidateDict['Candidate']}\n")
+    print("""\n-------------------------
+    """)
+    txtfile.writelines("""\n-------------------------
+    """)
+    
+    
 
+   
 
-        
-        txtfile.writelines(f"{CandidateDict['Candidate']}:  {round(CandidateDict['NumberOfVotes']/TotalVotes * 100, 3)}  % ({CandidateDict['NumberOfVotes']}) \n")
 
 
 
